@@ -1,9 +1,9 @@
 [proxy]
-ansible2.hl.local ansible_host=192.168.33.12 ansible_user=vagrant ansible_password=vagrant
+ansible2.hl.local ansible_host=192.168.33.12
 
 [webservers]
-ansible3.hl.local ansible_host=192.168.33.13 ansible_user=vagrant ansible_password=vagrant
-ansible4.hl.local ansible_host=192.168.33.14 ansible_user=vagrant ansible_password=vagrant
+ansible3.hl.local ansible_host=192.168.33.13
+ansible4.hl.local ansible_host=192.168.33.14
 
 [database]
-ansible5.hl.local ansible_host=192.168.33.15 ansible_user=vagrant ansible_password=vagrant
+ansible5.hl.local ansible_host=192.168.33.15
