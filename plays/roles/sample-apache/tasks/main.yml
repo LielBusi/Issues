@@ -1,0 +1,14 @@
+---
+- name: Ensure httpd, mod_ssl and php packages are installed
+  ansible.builtin.package:
+    name:
+      - httpd
+      - mod_ssl
+      - php
+    state: present
+
+- name: Ensure apahce service is running and enabled on boot
+  ansible.builtin.service:
+    name: apahce
+    state: started
+    enabled: true
