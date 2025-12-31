@@ -1,0 +1,15 @@
+---
+- name: Create software repository on servers in database host group
+  hosts: database
+  become: true
+
+  tasks: 
+    # Repository file created in /etc/yum.repos.d/
+    - name: Create MySQL yum repository
+      ansible.builtin.yum_repository:
+        name: mysql80-community
+        description: MySQL 8.0 YUM Repo
+        baseurl: http://repo.mysql.com/yum/mysql-8.0-community/el/8/x86_64/
+        gpgkey: http://repo.mysql.com/RPM-GPG-KEY-mysql
+        gpgcheck: true
+        enabled: true
