@@ -10,7 +10,7 @@
 
 - name: Ensure apahce service is running and enabled on boot
   ansible.builtin.service:
-    name: apahce
+    name: httpd
     state: started
     enabled: true
 
@@ -23,3 +23,13 @@
   loop:
     - http
     - https
+
+- name: Create file /var/www/html/index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: "{{ apache_user }}"
+    group: "{{ apache_group }}"
+    mode: '0644'
+  notify:
+    - Restart apache
