@@ -1,0 +1,12 @@
+---
+- name: Create root cronjob on proxy group
+  hosts: proxy
+  become: true
+
+  tasks: 
+    - name: Create cronjob to update time.log every hour
+      ansible.builtin.cron: 
+        name: "Add date each hour to log file"
+        minute: "0"                             # We can also do special_time: "hourly"
+        job: "date >> /var/log/time.log"
+        state: present
