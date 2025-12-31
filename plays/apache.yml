@@ -1,7 +1,9 @@
 ---
 - name: Deploy apache service
   hosts: webservers
+  remote_user: automation
   become: true
+  gather_facts: true
   
   roles:
     - sample-apache

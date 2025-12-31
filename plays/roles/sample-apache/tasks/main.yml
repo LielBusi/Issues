@@ -1,21 +1,25 @@
 ---
-- name: Ensure httpd, mod_ssl and php packages are installed
+- name: Ensure httpd, mod_ssl, firewalld and php packages are installed
   # package module uses yum automatically on RHEL and apt on ubuntu.
   ansible.builtin.package:
     name:
       - httpd
       - mod_ssl
       - php
+      - firewalld
     state: present
 
-- name: Ensure apahce service is running and enabled on boot
+- name: Ensure apahce and firewalld services are running and enabled on boot
   ansible.builtin.service:
-    name: httpd
+    name: "{{ item }}" 
     state: started
     enabled: true
+  loop:
+    - httpd
+    - firewalld
 
-- name: Configure firewall to allow all incoming traffic on HTTP and HTTPS.
-  ansible.builtin.firewalld:
+- name: Configure firewall to allow all incoming traffic on HTTP and HTTPS
+  ansible.posix.firewalld:
     service: "{{ item }}"
     permanent: true
     state: enabled
@@ -24,12 +28,15 @@
     - http
     - https
 
+- name: Derive apache user dynamically
+  set_fact:
+    apache_user: "{{ 'www-data' if ansible_os_family == 'Debian' else 'apache' }}"
+
 - name: Create file /var/www/html/index.html
   ansible.builtin.template:
     src: index.html.j2
     dest: /var/www/html/index.html
     owner: "{{ apache_user }}"
-    group: "{{ apache_group }}"
-    mode: '0644'
+    group: "{{ apache_user }}"
   notify:
     - Restart apache

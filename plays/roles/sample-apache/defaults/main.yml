@@ -1,4 +1,2 @@
 ---
 # defaults file for sample-apache
-apache_user: "{{ ansible_os_family == 'Debian' | ternary('www-data','apache') }}"
-apache_group: "{{ apache_user }}"
