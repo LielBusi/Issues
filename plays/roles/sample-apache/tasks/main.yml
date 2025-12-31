@@ -1,5 +1,6 @@
 ---
 - name: Ensure httpd, mod_ssl and php packages are installed
+  # package module uses yum automatically on RHEL and apt on ubuntu.
   ansible.builtin.package:
     name:
       - httpd
@@ -12,3 +13,5 @@
     name: apahce
     state: started
     enabled: true
+
+- 
