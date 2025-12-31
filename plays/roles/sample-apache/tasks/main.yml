@@ -14,4 +14,12 @@
     state: started
     enabled: true
 
-- 
+- name: Configure firewall to allow all incoming traffic on HTTP and HTTPS.
+  ansible.builtin.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  loop:
+    - http
+    - https
