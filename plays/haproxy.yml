@@ -1,0 +1,37 @@
+---
+- name: Configure HAproxy
+  hosts: proxy
+  become: true
+
+  vars:
+    http_port: 80
+    haproxy_balance_algorithm: roundrobin
+    haproxy_backend_httpchk: ""
+
+  pre_tasks:
+    - name: Ensure firewalld service is running and enabled on boot
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Configure firewall to allow all incoming traffic on HTTP
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    # Build the list of backend servers dynamically from the "webservers" inventory group
+    - name: Set HAProxy backend servers dynamically
+      set_fact:
+        haproxy_backend_servers: >
+          [{% for host in groups['webservers'] %}
+            {
+              "name": "{{ host }}",
+              "address": "{{ hostvars[host].ansible_host | default(host) }}:{{ http_port }}"
+            }{% if not loop.last %},{% endif %}
+          {% endfor %}]
+
+  roles:
+    - geerlingguy.haproxy
