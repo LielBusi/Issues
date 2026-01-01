@@ -1,0 +1,16 @@
+---
+- name: Create server list on database hosts
+  hosts: database
+  gather_facts: yes
+  become: true
+
+  tasks:    
+    - name: Generate server list file from template 
+      ansible.builtin.template:
+        src: templates/server_list.j2
+        dest: /etc/server_list.txt
+        owner: automation
+        group: automation
+        mode: "0600"
+        # SELinux - another security level on the file
+        setype: net_conf_t
