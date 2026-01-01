@@ -1,0 +1,17 @@
+---
+- name: Create custom ansible fact for database servers
+  hosts: database
+  become: true
+
+  tasks:
+    - name: Ensure facts directory exists
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d
+        state: directory
+
+    - name: Create custom fact
+      ansible.builtin.copy:
+        dest: /etc/ansible/facts.d/sample_exam.fact
+        content: |
+          [custom]
+          server_role=mysql
