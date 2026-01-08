@@ -1,2 +1,19 @@
 ---
-# vars file for sample-mysql
+# Partition data
+partition_number: 1
+partition_size: 800MB
+
+# Disk variables
+disk_device: /dev/sdb
+fs_type: xfs
+
+# LVM variables
+pv_name: "{{ disk_device }}{{ partition_number }}"
+vg_name: vg_database
+lv_name: lv_mysql
+lv_size: 512M
+lv_path: "/dev/{{ vg_name }}/{{ lv_name }}"
+
+# MySQL variables
+mysql_port: 3306
+mysql_mount_point: /mnt/mysql_backup

@@ -1,2 +1,2 @@
 ---
-# defaults file for sample-mysql
+mysql_config_path: /etc/my.cnf
