@@ -1,2 +1,6 @@
 ---
-# tasks file for sample-mysql
+- name: Create LVM on remotes 
+  import_tasks: lvm.yml 
+  
+- name: Configure MySQL server on them 
+  import_tasks: mysql.yml
