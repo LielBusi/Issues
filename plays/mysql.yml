@@ -1,0 +1,9 @@
+---
+- name: Deploy MySQL server on remotes
+  hosts: database
+  become: true
+  vars_files:
+    - ./vault-pass.yml
+    
+  roles:
+    - sample-mysql
