@@ -3,7 +3,7 @@
   hosts: all
   become: true
   vars_files:
-    - ~/vault-pass.yml
+    - ./vault-pass.yml
 
   vars:
     ssh_user: automation
