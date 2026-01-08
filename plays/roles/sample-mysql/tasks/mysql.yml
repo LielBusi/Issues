@@ -1,0 +1,57 @@
+--- 
+# It creats the directory if not exists
+- name: Mount LV on mount directory 
+  ansible.posix.mount: 
+    path: "{{ mysql_mount_point }}" 
+    src: "{{ lv_path }}" 
+    fstype: "{{ fs_type }}" 
+    
+    # Mounts now but also writes to /etc/fstab automatically for permanent mount 
+    state: mounted 
+    
+- name: Install MySQL server 
+  ansible.builtin.yum: 
+    name: mysql-server 
+    state: latest 
+
+- name: Ensure firewalld is installed 
+  ansible.builtin.package: 
+    name: firewalld 
+    state: present 
+    
+- name: Ensure firewalld and mysqld services are running and enabled 
+  ansible.builtin.service: 
+    name: "{{ item }}" 
+    state: started 
+    enabled: true 
+  
+  loop: 
+    - firewalld 
+    - mysqld 
+    
+- name: Configure firewall for MySQL 
+  ansible.posix.firewalld: 
+    port: "{{ mysql_port }}/tcp" 
+    permanent: true 
+    state: enabled 
+    immediate: true 
+
+# Install required package by MySQL 
+- name: Ensure PyMySQL is installed 
+  ansible.builtin.package: 
+    name: python3-PyMySQL 
+    state: present 
+
+- name: Set root user password
+  mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    check_implicit_admin: true
+  ignore_errors: true
+
+- name: Deploy MySQL configuration 
+  ansible.builtin.template: 
+    src: my.cnf.j2 
+    dest: "{{ mysql_config_path }}" 
+    mode: "0644" 
+  notify: Restart MySQL
