@@ -1,0 +1,36 @@
+---
+- name: Create primary partition
+  community.general.parted:
+    device: "{{ disk_device }}"
+    number: "{{ partition_number }}"
+    part_end: "{{ partition_size }}"
+    part_type: primary
+    state: present
+
+- name: Ensure LVM tools are installed 
+  ansible.builtin.package:
+    name: lvm2
+    state: present
+    
+- name: Create VG contains the new partition
+  # It uses pvcreate to create PV from the partition
+  community.general.lvg:
+    vg: "{{ vg_name }}"
+    pvs:
+      - "{{ pv_name }}"
+    state: present
+
+- name: Create LV inside the new volume group
+  community.general.lvol:
+    vg: "{{ vg_name }}"
+    lv: "{{ lv_name }}"
+    size: "{{ lv_size }}"
+    state: present
+
+- name: Create filesystem on new LV
+  community.general.filesystem:
+    fstype: "{{ fs_type }}"
+    dev: "{{ lv_path }}"
+    state: present
+
+    
